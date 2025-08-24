@@ -22,9 +22,12 @@ const requiredPlayers = 2;
 Color get randomColor => gridColors[Random().nextInt(gridColors.length)];
 
 class Room {
+  final String id;
   final List<String> players;
   final GameState state;
   final Timestamp createdAt;
+
+  static String convertIdToCode(String id) => id.substring(0, 6).toUpperCase();
 
   bool get shouldBeHidden =>
       players.length >= requiredPlayers ||
@@ -44,9 +47,13 @@ class Room {
           0;
 
   const Room(
-      {required this.players, required this.state, required this.createdAt});
+      {required this.id,
+      required this.players,
+      required this.state,
+      required this.createdAt});
 
   factory Room.fromDocument(DocumentSnapshot document) => Room(
+      id: document.id,
       players: List<String>.from(document.get("players")),
       state:
           GameState.fromJson(Map<String, dynamic>.from(document.get("state"))),

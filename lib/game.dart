@@ -28,7 +28,7 @@ class GamePage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("In-Game"),
+          title: Text("In-Game (${Room.convertIdToCode(reference.id)})"),
         ),
         body: StreamBuilder(
             stream: reference.snapshots(),
@@ -50,6 +50,7 @@ class GamePage extends StatelessWidget {
                     min(screenSize.width, screenSize.height * 3 / 4);
                 final sizePerItem = dimension / (gridSize + 1);
                 final icons = [Icons.close, Icons.circle_outlined];
+                final textIcons = ["X", "O"];
                 final winner = room.checkWin();
                 return Center(
                   child: SingleChildScrollView(
@@ -59,10 +60,10 @@ class GamePage extends StatelessWidget {
                         Text(
                           winner == null
                               ? (room.players[room.state.turn] != uuid
-                                  ? "Player #${room.state.turn + 1}'s Turn"
+                                  ? "Player ${textIcons[room.state.turn]}'s Turn"
                                   : "It is Your Turn")
                               : (room.players[winner] != uuid
-                                  ? "Player #${winner + 1} Wins"
+                                  ? "Player ${textIcons[winner]} Wins"
                                   : "You Win"),
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 24),

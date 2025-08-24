@@ -21,10 +21,11 @@ class RoomsPage extends StatelessWidget {
             if (snapshot.data == null) {
               return const Center(child: CircularProgressIndicator());
             } else {
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: snapshot.data!.docs.map((e) {
+              final rooms = snapshot.data!.docs;
+              return ListView.builder(
+                  itemCount: rooms.length,
+                  itemBuilder: (context, i) {
+                    final e = rooms[i];
                     final room = Room.fromDocument(e);
                     if (room.shouldBeDeleted) {
                       e.reference.delete();
@@ -32,25 +33,35 @@ class RoomsPage extends StatelessWidget {
                     if (room.shouldBeHidden) {
                       return const SizedBox.shrink();
                     }
-                    return ElevatedButton(
-                        onPressed: () async {
-                          final uuid = const UuidV4().generate();
-                          await e.reference.update({
-                            "players": FieldValue.arrayUnion([uuid])
-                          });
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => GamePage(
-                                        reference: e.reference,
-                                        uuid: uuid,
-                                      )));
-                        },
-                        child: Text(
-                            "${room.players.firstOrNull?.substring(0, 8)}'s Room (${room.players.length}/2)"));
-                  }).toList(),
-                ),
-              );
+                    final shape = RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    );
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 4.0),
+                      elevation: 8,
+                      shape: shape,
+                      child: ListTile(
+                          shape: shape,
+                          onTap: () async {
+                            final uuid = const UuidV4().generate();
+                            await e.reference.update({
+                              "players": FieldValue.arrayUnion([uuid])
+                            });
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GamePage(
+                                          reference: e.reference,
+                                          uuid: uuid,
+                                        )));
+                          },
+                          title: Text(
+                            "Room ${Room.convertIdToCode(room.id)} (${room.players.length}/$requiredPlayers)",
+                            textAlign: TextAlign.center,
+                          )),
+                    );
+                  });
             }
           }),
       floatingActionButton: FloatingActionButton(
