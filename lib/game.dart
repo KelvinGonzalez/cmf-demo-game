@@ -57,17 +57,15 @@ class GamePage extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          winner == null
-                              ? (room.players[room.state.turn] != uuid
-                                  ? "Player ${textIcons[room.state.turn]}'s Turn"
-                                  : "It is Your Turn")
-                              : (room.players[winner] != uuid
-                                  ? "Player ${textIcons[winner]} Wins"
-                                  : "You Win"),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 24),
-                        ),
+                        // TODO: Add player turn visibility
+                        if (winner != null)
+                          Text(
+                            room.players[winner] != uuid
+                                ? "Player ${textIcons[winner]} Wins"
+                                : "You Win",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 24),
+                          ),
                         const SizedBox(height: 16),
                         Column(
                           mainAxisSize: MainAxisSize.min,

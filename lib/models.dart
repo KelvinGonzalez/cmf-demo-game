@@ -59,8 +59,9 @@ class Room {
           GameState.fromJson(Map<String, dynamic>.from(document.get("state"))),
       createdAt: document.get("createdAt") ?? Timestamp.now());
 
-  void saveState(DocumentReference reference) =>
-      reference.update({"state": state.toJson()});
+  void saveState(DocumentReference reference) {
+    // TODO: Send updated state to Firebase database
+  }
 
   bool chooseColor(int colorIndex, String player, DocumentReference reference) {
     if (players[state.turn] != player) return false;
@@ -104,14 +105,8 @@ class Room {
   }
 
   void paintArea(int row, int col, Color areaColor, Color selectedColor) {
-    if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) return;
-    if (state.grid[row][col].color != areaColor) return;
-
+    // TODO: Color all adjacent tiles of same area color
     state.grid[row][col].color = selectedColor;
-
-    for (final dir in [(-1, 0), (1, 0), (0, -1), (0, 1)]) {
-      paintArea(row + dir.$1, col + dir.$2, areaColor, selectedColor);
-    }
   }
 
   bool performMove(
